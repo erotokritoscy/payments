@@ -20,7 +20,7 @@ class JCC
 
         $url = config('jcc.order_form_url');
 
-        if (config('jcc.development')) {
+        if (!config('jcc.development')) {
             $url = str_replace('-test', '', $url);
         }
 
@@ -57,7 +57,7 @@ class JCC
     {
         $url = config('jcc.order_status_url');
 
-        if (config('jcc.development')) {
+        if (!config('jcc.development')) {
             $url = str_replace('-test', '', $url);
         }
 
