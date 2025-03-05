@@ -18,7 +18,13 @@ class JCC
         $amount      = number_format($amount, 2, '', '');
         $orderNumber = time() . rand(1000, 9999);
 
-        $response = Http::asForm()->post(config('jcc.order_form_url'), [
+        $url = config('jcc.order_form_url');
+
+        if (config('jcc.development')) {
+            $url = str_replace('-test', '', $url);
+        }
+
+        $response = Http::asForm()->post($url, [
             'userName'           => config('jcc.username'),
             'password'           => config('jcc.password'),
             'orderNumber'        => $orderNumber,
@@ -49,7 +55,13 @@ class JCC
 
     public static function getOrderStatus($orderId)
     {
-        $response = Http::asForm()->post(config('jcc.order_status_url'), [
+        $url = config('jcc.order_status_url');
+
+        if (config('jcc.development')) {
+            $url = str_replace('-test', '', $url);
+        }
+
+        $response = Http::asForm()->post($url, [
             'userName' => config('jcc.username'),
             'password' => config('jcc.password'),
             'orderId'  => $orderId,

@@ -7,4 +7,5 @@ return [
     'password'         => env('JCC_PASSWORD'),
     'currencyCode'     => env('JCC_CURRENCY_CODE', '978'),
     'callback_secret'  => env('JCC_CALLBACK_SECRET'),
+    'development'              => env('JCC_DEVELOPMENT', true),
 ];
