@@ -13,7 +13,7 @@ class JCC
     /**
      * @throws Exception
      */
-    public static function formUrl(float $amount, string $returnUrl, ?string $failUrl, ?string $callbackUrl, array $additionalParams = []): RedirectResponse
+    public static function formUrl(float $amount, string $returnUrl, ?string $failUrl, ?string $callbackUrl, array $additionalParams = []): string
     {
         $amount      = number_format($amount, 2, '', '');
         $orderNumber = time() . rand(1000, 9999);
@@ -33,7 +33,7 @@ class JCC
             'returnUrl'          => $returnUrl,
             'failUrl'            => $failUrl,
             'dynamicCallbackUrl' => $callbackUrl,
-            'jsonParams'         => json_encode($additionalParams),
+            'jsonParams'         => $additionalParams !== [] ? json_encode($additionalParams) : null,
         ]);
 
         $data = $response->json();
@@ -49,7 +49,7 @@ class JCC
         $transaction->currency_code = config('jcc.currencyCode');
         $transaction->save();
 
-        return response()->redirectTo($data['formUrl']);
+        return $data['formUrl'];
     }
 
 
