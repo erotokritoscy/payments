@@ -57,7 +57,7 @@ class JCC
     /**
      * @throws Exception
      */
-    public static function chargeWithBinding(float $amount, string $clientId, string $bindingId, ?string $callbackUrl = null): bool
+    public static function chargeWithBinding(float $amount, string $clientId, string $bindingId, ?string $tii = null): bool
     {
         $amount      = number_format($amount, 2, '', '');
         $orderNumber = time() . rand(1000, 9999);
@@ -69,14 +69,11 @@ class JCC
         }
 
         $response = Http::asForm()->post($url, [
-            'userName'           => config('jcc.username'),
-            'password'           => config('jcc.password'),
-            'orderNumber'        => $orderNumber,
-            'amount'             => $amount,
-            'currency'           => config('jcc.currencyCode'),
-            'dynamicCallbackUrl' => $callbackUrl,
-            'clientId'           => $clientId,
-            'bindingId'          => $bindingId,
+            'userName'  => config('jcc.username'),
+            'password'  => config('jcc.password'),
+            'mdOrder'   => $orderNumber,
+            'bindingId' => $bindingId,
+            'tii'       => $tii,
         ]);
 
         $data = $response->json();
@@ -92,7 +89,7 @@ class JCC
         $transaction->currency_code = config('jcc.currencyCode');
         $transaction->client_id     = $clientId;
         $transaction->binding_id    = $bindingId;
-        $transaction->status        = isset($data['errorCode']) ? JccTransaction::STATUS_FAIL : JccTransaction::STATUS_SUCCESS;
+        $transaction->status        = $data['errorCode'] != 0 ? JccTransaction::STATUS_FAIL : JccTransaction::STATUS_SUCCESS;
         $transaction->save();
 
         return $transaction->status === JccTransaction::STATUS_SUCCESS;
@@ -148,10 +145,6 @@ class JCC
             request()->operation === 'deposited' && request()->status === "0" => JccTransaction::STATUS_FAIL,
             default => 1
         };
-
-        if (request()->has('bindingId')) {
-            $transaction->binding_id = request()->bindingId;
-        }
 
         $transaction->save();
 
