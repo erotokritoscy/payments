@@ -73,7 +73,6 @@ class JCC
         float $amount,
         string $mdOrder,
         string $clientId,
-        string $bindingId,
         ?string $tii = null,
     ) {
         $amount      = number_format($amount, 2, '', '');
@@ -82,12 +81,21 @@ class JCC
         $url = config('jcc.order_binding_url');
 
         $originalTransaction = JccTransaction::where('order_id', $mdOrder)->first();
+        $originalOrder       = self::getOrderStatus($mdOrder);
+
         if (!$originalTransaction) {
             Log::error('JCC Error: Original transaction not found for mdOrder ' . $mdOrder);
             throw new Exception('Original transaction not found');
         }
-        $originalPaymentDate = strtotime($originalTransaction->created_at);
+
+        if (!isset($originalOrder['bindingInfo']['bindingId'])) {
+            Log::error('JCC Error: Binding ID not found for mdOrder ' . $mdOrder);
+            throw new Exception('Binding ID not found');
+        }
+
+        $originalPaymentDate      = strtotime($originalTransaction->created_at);
         $originalPaymentNetRefNum = $originalTransaction->order_number;
+        $bindingId                = $originalOrder['bindingInfo']['bindingId'];
 
         if (!config('jcc.development')) {
             $url = str_replace('-test', '', $url);
