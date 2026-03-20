@@ -73,7 +73,7 @@ class JCC
         float $amount,
         string $mdOrder,
         string $clientId,
-        ?string $tii = null,
+        string $tii = 'U',
     ) {
         $amount      = number_format($amount, 2, '', '');
         $orderNumber = time() . rand(1000, 9999);
