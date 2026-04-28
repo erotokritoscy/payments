@@ -3,7 +3,7 @@
 return [
     'order_form_url'    => 'https://gateway-test.jcc.com.cy/payment/rest/register.do',
     'order_status_url'  => 'https://gateway-test.jcc.com.cy/payment/rest/getOrderStatusExtended.do',
-    'order_binding_url' => 'https://gateway-test.jcc.com.cy/payment/rest/paymentOrderBinding.do',
+    'order_binding_url' => 'https://gateway-test.jcc.com.cy/payment/rest/instantPayment.do',
     'username'         => env('JCC_USERNAME'),
     'password'         => env('JCC_PASSWORD'),
     'currencyCode'     => env('JCC_CURRENCY_CODE', '978'),

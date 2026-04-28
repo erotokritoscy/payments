@@ -93,8 +93,6 @@ class JCC
             throw new Exception('Binding ID not found');
         }
 
-        $originalPaymentDate      = strtotime($originalTransaction->created_at);
-        $originalPaymentNetRefNum = $originalTransaction->order_number;
         $bindingId                = $originalOrder['bindingInfo']['bindingId'];
 
         if (!config('jcc.development')) {
@@ -104,15 +102,17 @@ class JCC
         $response = Http::asForm()->post($url, [
             'userName'                 => config('jcc.username'),
             'password'                 => config('jcc.password'),
+            'amount'                   => $amount,
             'orderNumber'              => $orderNumber,
             'mdOrder'                  => $mdOrder,
             'bindingId'                => $bindingId,
             'tii'                      => $tii,
-            'originalPaymentDate'      => $originalPaymentDate,
-            'originalPaymentNetRefNum' => $originalPaymentNetRefNum,
+            'returnUrl'                => 'https://example.com'
         ]);
 
         $data = $response->json();
+
+        dd($data);
         if ($data['errorCode'] != 0) {
             Log::error('JCC Error: ' . $data['errorMessage']);
             throw new Exception('JCC Error');
