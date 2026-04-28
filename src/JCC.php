@@ -73,6 +73,7 @@ class JCC
         float $amount,
         string $mdOrder,
         string $clientId,
+        string $returnUrl = 'https://example.com/return',
         string $tii = 'U',
     ) {
         $amount      = number_format($amount, 2, '', '');
@@ -107,12 +108,11 @@ class JCC
             'mdOrder'                  => $mdOrder,
             'bindingId'                => $bindingId,
             'tii'                      => $tii,
-            'returnUrl'                => 'https://example.com'
+            'returnUrl'                => $returnUrl,
         ]);
 
         $data = $response->json();
 
-        dd($data);
         if ($data['errorCode'] != 0) {
             Log::error('JCC Error: ' . $data['errorMessage']);
             throw new Exception('JCC Error');
